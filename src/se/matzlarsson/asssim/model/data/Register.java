@@ -1,0 +1,11 @@
+package se.matzlarsson.asssim.model.data;
+
+public interface Register {
+
+	public String getName();
+	public int getByteSize();
+	public AssByte getByte();
+	public AssByte[] getBytes();
+	public void setBytes(AssByte... data);
+	
+}
