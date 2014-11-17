@@ -1,15 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <computer name = "HC12">
-	<register name = "A">
-		<data type = "HEX">4C</data>
-	</register>
-	<register name = "B">
-		<data type = "HEX">F5</data>
-	</register>
-	<register name = "D">
-		<reference name = "A"></reference>
-		<reference name = "B"></reference>
-	</register>
+	<registers>
+		<register name = "A">
+			<data type = "HEX">4C</data>
+		</register>
+		<register name = "B">
+			<data type = "HEX">F5</data>
+		</register>
+		<register name = "D">
+			<reference name = "A"></reference>
+			<reference name = "B"></reference>
+		</register>
+	</registers>
+	
+	<memory addressSize = "2">
+		<component name = "IO" startAddress = "0000" endAddress = "0FFF" readable = "true" writeable = "true"></component>
+		<component name = "RAM" startAddress = "1000" endAddress = "3FFF" readable = "true" writeable = "true"></component>
+		<component name = "ROM" startAddress = "4000" endAddress = "FFFF" readable = "true" writeable = "false"></component>
+	</memory>
+	
+	<syntax>
+		<inputtype name = "constant">#</inputtype>
+		<inputtype name = "binary" quotes = "'">b</inputtype>
+		<inputtype name = "hexadecimal">$</inputtype>
+		<inputtype name = "decimal"></inputtype>
+	</syntax>
+	
+	<instructions>
+		<instruction name = "LDA" id = "B6" type = "XXX" help = "Load Accumulator A (from memory)">
+			<parameter type = "MEM" name = "address"></parameter>
+			<functions>
+				<load type = "MEM" input = "address" output = "value"></load>
+				<store type = "REG" input = "value" output = "A"></store>
+			</functions>
+		</instruction>
+	</instructions>
 
 </computer>

@@ -9,7 +9,7 @@ public class AssBit {
 	}
 	
 	public AssBit(int value){
-		this.value = 1;
+		this.value = value;
 	}
 	
 	public int getValue(){

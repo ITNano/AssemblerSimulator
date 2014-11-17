@@ -1,4 +1,6 @@
-package se.matzlarsson.asssim.model.data;
+package se.matzlarsson.asssim.model.data.register;
+
+import se.matzlarsson.asssim.model.data.AssByte;
 
 public interface Register {
 

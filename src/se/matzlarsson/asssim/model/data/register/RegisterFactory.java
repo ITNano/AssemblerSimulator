@@ -1,4 +1,4 @@
-package se.matzlarsson.asssim.model.data;
+package se.matzlarsson.asssim.model.data.register;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import se.matzlarsson.asssim.model.data.AssByte;
+import se.matzlarsson.asssim.model.data.NumericalType;
 import se.matzlarsson.asssim.util.XMLReader;
 
 public class RegisterFactory {

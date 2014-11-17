@@ -151,7 +151,7 @@ public class AssByte {
 					s += getValue();
 					break;
 			case HEXADECIMAL:
-					s = Converter.decToHex(getValue());
+					s = Converter.decToHex(getValue(), 2);
 					break;
 		}
 		
@@ -166,5 +166,35 @@ public class AssByte {
 		}
 		
 		return s;
+	}
+	
+	
+	
+	public static AssByte[] getAssBytes(NumericalType type, String value){
+		switch(type){
+			case DECIMAL:
+				return getAssBytes(Integer.parseInt(value));
+			case HEXADECIMAL:
+				return getAssBytes(Converter.hexToDecimal(value));
+			case BINARY:
+				throw new IllegalArgumentException("Binary is boring");
+			default:
+				return null;
+		}
+	}
+	
+	private static AssByte[] getAssBytes(int decNum){
+		int size = 1, tmp = decNum;
+		while(tmp>255){
+			size++;
+			tmp /= 256;
+		}
+		AssByte[] b = new AssByte[size];
+		for(int i = 0; i<size; i++){
+			b[i] = new AssByte();
+			b[i].setValue(decNum%256);
+			decNum /= 256;
+		}
+		return b;
 	}
 }

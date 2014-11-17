@@ -1,4 +1,7 @@
-package se.matzlarsson.asssim.model.data;
+package se.matzlarsson.asssim.model.data.register;
+
+import se.matzlarsson.asssim.model.data.AssByte;
+import se.matzlarsson.asssim.model.data.NumericalType;
 
 
 public class BasicRegister implements Register{

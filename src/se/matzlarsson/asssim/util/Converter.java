@@ -19,13 +19,13 @@ public class Converter {
 			dec = 16*dec+tmp;
 		}
 		
-		return tmp;
+		return dec;
 	}
 	
-	public static String decToHex(int dec){
+	public static String decToHex(int dec, int minLength){
 		String hex = "";
 		int tmp = 0;
-		while(hex.length()<2 || dec>0){
+		while(hex.length()<minLength || dec>0){
 			tmp = dec%16;
 			hex = (char)(tmp<10?tmp+48:tmp+55)+hex;
 			dec /= 16;
