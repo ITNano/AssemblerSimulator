@@ -2,6 +2,7 @@ package se.matzlarsson.asssim.model.data.instruction;
 
 import se.matzlarsson.asssim.model.data.AssByte;
 import se.matzlarsson.asssim.model.data.Machine;
+import se.matzlarsson.asssim.model.data.NumericalType;
 import se.matzlarsson.asssim.model.data.SyntaxUtil;
 
 public class RegisterParameter extends BasicParameter {
@@ -21,17 +22,35 @@ public class RegisterParameter extends BasicParameter {
 	}
 
 	@Override
-	public void perform(Machine m, String input) {
-		AssByte[] data = new AssByte[input.length()];
-		for(int i = 0; i<input.length(); i++){
+	public AssByte[] prepareBytes(Machine m, String input) {
+		AssByte[] data = new AssByte[getSize()];
+		int i = 0;
+		for(; i<input.length() && i<getSize(); i++){
 			data[i] = new AssByte((int)input.charAt(i));
 		}
-		
-		while(input.length()<getSize()){
-			input += " ";
+		for(; i<getSize(); i++){
+			data[i] = new AssByte();
 		}
 		
-		super.perform(m, data);
+		return data;
 	}
 
+	@Override
+	public void perform(Machine m, String input) {
+		AssByte[] data = AssByte.getAssBytes(NumericalType.DECIMAL, input);
+		String name = "";
+		for(int i = 0; i<data.length; i++){
+			if(data[i].getValue()>0){
+				name += (char)data[i].getValue();
+			}
+		}
+		
+		super.perform(m, m.getRegisterValue(name));
+	}
+
+	@Override
+	public String toString(){
+		return "Register "+super.toString();
+	}
+	
 }

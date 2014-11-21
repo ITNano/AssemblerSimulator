@@ -1,6 +1,5 @@
 package se.matzlarsson.asssim.model;
 
-import se.matzlarsson.asssim.model.data.AssembleException;
 import se.matzlarsson.asssim.model.data.Machine;
 
 public class RuntimeExecutor {
@@ -20,7 +19,7 @@ public class RuntimeExecutor {
 		this.program.applyToMachine(this.machine);
 	}
 	
-	private void run(int delay){
+	private void run(int delay) throws ProgramException{
 		running = true;
 		while(isRunning()){
 			step();
@@ -37,15 +36,15 @@ public class RuntimeExecutor {
 		return running;
 	}
 	
-	public void step(){
+	public void step() throws ProgramException{
 		program.next(machine);
 	}
 	
-	public void runSlow(){
+	public void runSlow() throws ProgramException{
 		run(RUN_SLOW_DELAY);
 	}
 	
-	public void runFast(){
+	public void runFast() throws ProgramException{
 		run(RUN_FAST_DELAY);
 	}
 	

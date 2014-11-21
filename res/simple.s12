@@ -1,5 +1,7 @@
 
 
-
-	LDAA	#$15
-	LDAB	$1000
+	LDAB	#$3
+	LDAA	5,X
+	NOP
+	LDAA	#$17
+	LDD		B,X

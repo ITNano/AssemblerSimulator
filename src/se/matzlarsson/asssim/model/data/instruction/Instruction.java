@@ -5,7 +5,6 @@ import java.util.List;
 
 import se.matzlarsson.asssim.model.data.AssByte;
 import se.matzlarsson.asssim.model.data.Machine;
-import se.matzlarsson.asssim.model.data.SyntaxUtil;
 import se.matzlarsson.asssim.util.Converter;
 
 public class Instruction {
@@ -51,12 +50,15 @@ public class Instruction {
 	}
 	
 	public AssByte[] getParameterBytes(Machine m, String input){
+		if(input.length()<=0){
+			return new AssByte[0];
+		}
+		
 		String[] parts = input.split(",");
 		List<AssByte> bytes = new ArrayList<AssByte>();
 		AssByte[] tmp;
 		for(int i = 0; i<parts.length; i++){
-			String concreteValue = SyntaxUtil.getConcreteValue(m.getSyntax(), parts[i]);
-			tmp = AssByte.getAssBytes(SyntaxUtil.getNumericalType(m.getSyntax(), parts[i]), concreteValue);
+			tmp = parameters.get(i).prepareBytes(m, parts[i]);
 			int emptyBytes = parameters.get(i).getSize()-tmp.length;
 			for(int j = 0; j<emptyBytes; j++){
 				bytes.add(new AssByte());
@@ -90,6 +92,10 @@ public class Instruction {
 	}
 	
 	public boolean takesParameters(Machine m, String params){
+		if(parameters.size()==0 && params.equals("")){
+			return true;
+		}
+		
 		String[] parts = params.split(",");
 		if(parts.length != this.parameters.size()){
 			return false;
@@ -106,7 +112,7 @@ public class Instruction {
 	
 	public void run(Machine m, String indata){
 		String[] params = indata.split(",");
-		if(params.length != this.parameters.size()){
+		if(params.length != this.parameters.size() && !(parameters.size()==0 && indata.length()==0)){
 			throw new IllegalArgumentException("Invalid parameters");
 		}
 		

@@ -5,9 +5,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import se.matzlarsson.asssim.model.data.Machine;
+
 public class InstructionFactory {
 
-	public static Instruction createInstruction(Node rootNode){
+	public static Instruction createInstruction(Machine m, Node rootNode){
 		NamedNodeMap attr = rootNode.getAttributes();
 		String id = attr.getNamedItem("id").getNodeValue();
 		String name = attr.getNamedItem("name").getNodeValue();
@@ -17,7 +19,7 @@ public class InstructionFactory {
 		
 		NodeList params = ((Element)rootNode).getElementsByTagName("parameter");
 		for(int i = 0; i<params.getLength(); i++){
-			instr.addParameter(ParameterFactory.createParameter(params.item(i)));
+			instr.addParameter(ParameterFactory.createParameter(m, params.item(i)));
 		}
 		
 		NodeList functions = ((Element)rootNode).getElementsByTagName("functions").item(0).getChildNodes();

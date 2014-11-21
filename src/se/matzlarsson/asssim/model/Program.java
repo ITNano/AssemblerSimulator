@@ -9,7 +9,6 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 import se.matzlarsson.asssim.model.data.AssByte;
-import se.matzlarsson.asssim.model.data.AssembleException;
 import se.matzlarsson.asssim.model.data.Machine;
 import se.matzlarsson.asssim.model.data.instruction.Instruction;
 import se.matzlarsson.asssim.util.Converter;
@@ -47,12 +46,12 @@ public class Program {
 					}
 						
 					//Fix instruction stuff
-					Instruction instr = m.findInstruction(parts[0+(hasLabel?1:0)], parts[1+(hasLabel?1:0)]);
+					Instruction instr = m.findInstruction(parts[0+(hasLabel?1:0)], (parts.length>1+(hasLabel?1:0)?(parts[1+(hasLabel?1:0)]):""));
 					data.put(counter, new AssByte(instr.getID()));
 					counter++;
 					
 					//Fix parameters
-					params = instr.getParameterBytes(m, parts[1+(hasLabel?1:0)]);
+					params = instr.getParameterBytes(m, (parts.length>1+(hasLabel?1:0)?(parts[1+(hasLabel?1:0)]):""));
 					for(int i = 0; i<params.length; i++){
 						data.put(counter, params[i]);
 						counter++;
@@ -75,10 +74,13 @@ public class Program {
 		}
 	}
 	
-	public void next(Machine m){
+	public void next(Machine m) throws ProgramException{
 		//Load
 		int address = Math.max(0, AssByte.getNumericalValue(m.getRegisterValue(m.getCounterRegName())));
 		Instruction instr = m.findInstruction(m.readMemoryData(address).getValue());
+		if(instr==null){
+			throw new ProgramException("Could not find the current instruction");
+		}
 		
 		//Run
 		System.out.println("Running "+instr.getName());

@@ -1,10 +1,12 @@
 package se.matzlarsson.asssim;
 
+import se.matzlarsson.asssim.model.AssembleException;
 import se.matzlarsson.asssim.model.Program;
+import se.matzlarsson.asssim.model.ProgramException;
 import se.matzlarsson.asssim.model.RuntimeExecutor;
 import se.matzlarsson.asssim.model.data.AssByte;
-import se.matzlarsson.asssim.model.data.AssembleException;
 import se.matzlarsson.asssim.model.data.Machine;
+import se.matzlarsson.asssim.util.Converter;
 
 public class Main {
 
@@ -22,12 +24,14 @@ public class Main {
 		}
 		
 		System.out.println();
-		System.out.println("A: "+AssByte.getNumericalValue((m.getRegisterValue("A"))));
-		executor.step();
-		executor.step();
-		System.out.println("A: "+AssByte.getNumericalValue(m.getRegisterValue("A")));
-		System.out.println("B: "+AssByte.getNumericalValue(m.getRegisterValue("B")));
-		System.out.println(AssByte.getNumericalValue(m.getRegisterValue(m.getCounterRegName())));
+		for(int i = 0; i<7; i++){
+			try{
+				executor.step();
+				System.out.println("D: $"+Converter.decToHex(AssByte.getNumericalValue(m.getRegisterValue("D")), 4));
+			}catch(ProgramException pe){
+				System.out.println(pe.getMessage());
+			}
+		}
 	}
 	
 }

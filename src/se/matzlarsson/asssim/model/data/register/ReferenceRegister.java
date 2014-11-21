@@ -81,7 +81,7 @@ public class ReferenceRegister implements Register{
 	@Override
 	public void setValue(int value){
 		int range = 0;
-		for(int i = 0; i<registers.length; i++){
+		for(int i = registers.length-1; i>=0; i--){
 			range = (int)Math.pow(256, registers[i].getByteSize());
 			registers[i].setValue(value%range);
 			value /= range;

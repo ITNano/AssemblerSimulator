@@ -14,7 +14,7 @@
 		</register>
 		
 		<register name = "X">
-			<byte type = "HEX">00</byte>
+			<byte type = "HEX">10</byte>
 			<byte type = "HEX">00</byte>
 		</register>
 		<register name = "Y">
@@ -45,16 +45,123 @@
 	</syntax>
 	
 	<instructions>
-		<instruction name = "LDAA" id = "B6" type = "XXX" help = "Load Accumulator A (from memory)">
-			<parameter type = "CONST" name = "constant"></parameter>
+		<!-- LDAA instructions -->
+		<instruction name = "LDAA" id = "86" type = "immediate" help = "Load Accumulator A">
+			<parameter type = "CONST" name = "constant" size = "1"></parameter>
 			<functions>
 				<store type = "REG" input = "constant" output = "A"></store>
 			</functions>
 		</instruction>
-		<instruction name = "LDAB" id = "01" type = "XXX" help = "Load Accumulator B (from memory)">
+		<instruction name = "LDAA" id = "96" type = "direct" help = "Load Accumulator A (from memory)">
+			<parameter type = "MEM" name = "value" address = "address" size = "1"></parameter>
+			<functions>
+				<store type = "REG" input = "value" output = "A"></store>
+			</functions>
+		</instruction>
+		<instruction name = "LDAA" id = "A6" type = "combo" help = "Load Accumulator A (from memory, by using relative address)">
+			<parameter type = "CONST" name = "offset" ignoreConstantPrefix = "true"></parameter>
+			<parameter type = "REG" name = "regValue"></parameter>
+			<functions>
+				<add input = "offset,regValue" output = "address"></add>
+				<load type = "MEM" input = "address" output = "value" variable = "true"></load>
+				<store type = "REG" input = "value" output = "A"></store>
+			</functions>
+		</instruction>
+		<instruction name = "LDAA" id = "A5" type = "combo" help = "Load Accumulator A (from memory, by using relative address)">
+			<parameter type = "REG" name = "offset"></parameter>
+			<parameter type = "REG" name = "regValue"></parameter>
+			<functions>
+				<add input = "offset,regValue" output = "address"></add>
+				<load type = "MEM" input = "address" output = "value" variable = "true"></load>
+				<store type = "REG" input = "value" output = "A"></store>
+			</functions>
+		</instruction>
+		<instruction name = "LDAA" id = "B6" type = "extended" help = "Load Accumulator A (from memory)">
+			<parameter type = "MEM" name = "value" address = "address"></parameter>
+			<functions>
+				<store type = "REG" input = "value" output = "A"></store>
+			</functions>
+		</instruction>
+		
+		<!-- LDAB instructions -->
+		<instruction name = "LDAB" id = "C6" type = "immediate" help = "Load Accumulator B">
+			<parameter type = "CONST" name = "constant" size = "1"></parameter>
+			<functions>
+				<store type = "REG" input = "constant" output = "B"></store>
+			</functions>
+		</instruction>
+		<instruction name = "LDAB" id = "D6" type = "direct" help = "Load Accumulator B (from memory)">
+			<parameter type = "MEM" name = "value" address = "address" size = "1"></parameter>
+			<functions>
+				<store type = "REG" input = "value" output = "B"></store>
+			</functions>
+		</instruction>
+		<instruction name = "LDAB" id = "E6" type = "combo" help = "Load Accumulator B (from memory, by using relative address)">
+			<parameter type = "CONST" name = "offset" ignoreConstantPrefix = "true"></parameter>
+			<parameter type = "REG" name = "regValue"></parameter>
+			<functions>
+				<add input = "offset,regValue" output = "address"></add>
+				<load type = "MEM" input = "address" output = "value" variable = "true"></load>
+				<store type = "REG" input = "value" output = "B"></store>
+			</functions>
+		</instruction>
+		<instruction name = "LDAB" id = "E7" type = "combo" help = "Load Accumulator B (from memory, by using relative address)">
+			<parameter type = "REG" name = "offset"></parameter>
+			<parameter type = "REG" name = "regValue"></parameter>
+			<functions>
+				<add input = "offset,regValue" output = "address"></add>
+				<load type = "MEM" input = "address" output = "value" variable = "true"></load>
+				<store type = "REG" input = "value" output = "B"></store>
+			</functions>
+		</instruction>
+		<instruction name = "LDAB" id = "F6" type = "extended" help = "Load Accumulator B (from memory)">
 			<parameter type = "MEM" name = "value" address = "address"></parameter>
 			<functions>
 				<store type = "REG" input = "value" output = "B"></store>
+			</functions>
+		</instruction>
+		
+		<!-- LDD instructions -->
+		<instruction name = "LDD" id = "CC" type = "immediate" help = "Load Accumulator D">
+			<parameter type = "CONST" name = "constant"></parameter>
+			<functions>
+				<store type = "REG" input = "constant" output = "D"></store>
+			</functions>
+		</instruction>
+		<instruction name = "LDD" id = "DC" type = "direct" help = "Load Accumulator D (from memory)">
+			<parameter type = "MEM" name = "value" address = "address" size = "1" bytes = "2"></parameter>
+			<functions>
+				<store type = "REG" input = "value" output = "D"></store>
+			</functions>
+		</instruction>
+		<instruction name = "LDD" id = "EC" type = "combo" help = "Load Accumulator D (from memory, by using relative address)">
+			<parameter type = "CONST" name = "offset" ignoreConstantPrefix = "true"></parameter>
+			<parameter type = "REG" name = "regValue"></parameter>
+			<functions>
+				<add input = "offset,regValue" output = "address"></add>
+				<load type = "MEM" input = "address" output = "value" variable = "true" bytes = "2"></load>
+				<store type = "REG" input = "value" output = "D"></store>
+			</functions>
+		</instruction>
+		<instruction name = "LDD" id = "ED" type = "combo" help = "Load Accumulator D (from memory, by using relative address)">
+			<parameter type = "REG" name = "offset"></parameter>
+			<parameter type = "REG" name = "regValue"></parameter>
+			<functions>
+				<add input = "offset,regValue" output = "address"></add>
+				<load type = "MEM" input = "address" output = "value" variable = "true" bytes = "2"></load>
+				<store type = "REG" input = "value" output = "D"></store>
+			</functions>
+		</instruction>
+		<instruction name = "LDD" id = "FC" type = "extended" help = "Load Accumulator D (from memory)">
+			<parameter type = "MEM" name = "value" address = "address" bytes = "2"></parameter>
+			<functions>
+				<store type = "REG" input = "value" output = "D"></store>
+			</functions>
+		</instruction>
+		
+		<!-- Other instructions -->
+		<instruction name = "NOP" id = "A7" type = "epic" help = "Does absolutely nothing at all">
+			<functions>
 			</functions>
 		</instruction>
 	</instructions>

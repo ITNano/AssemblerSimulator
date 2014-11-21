@@ -1,4 +1,4 @@
-package se.matzlarsson.asssim.model.data;
+package se.matzlarsson.asssim.model;
 
 public class AssembleException extends Exception{
 

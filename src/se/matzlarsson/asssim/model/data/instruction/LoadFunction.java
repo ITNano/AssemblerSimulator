@@ -10,12 +10,14 @@ public class LoadFunction implements Function {
 	private String input;
 	private String output;
 	private boolean inputIsVariable;
+	private int byteSize = 1;
 	
-	public LoadFunction(RequestType type, String input, String output, boolean inputIsVariable){
+	public LoadFunction(RequestType type, String input, String output, boolean inputIsVariable, int byteSize){
 		this.type = type;
 		this.input = input;
 		this.output = output;
 		this.inputIsVariable = inputIsVariable;
+		this.byteSize = byteSize;
 	}
 
 	@Override
@@ -29,8 +31,10 @@ public class LoadFunction implements Function {
 				}else{
 					address = SyntaxUtil.getIntValue(m.getSyntax(), input);
 				}
-				data = new AssByte[1];
-				data[0] = m.readMemoryData(address);
+				data = new AssByte[byteSize];
+				for(int i = 0; i<data.length; i++){
+					data[i] = m.readMemoryData(address+i);
+				}
 				break;
 			case CONSTANT:
 				if(inputIsVariable){

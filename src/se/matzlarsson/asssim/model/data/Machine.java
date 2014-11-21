@@ -7,6 +7,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import se.matzlarsson.asssim.model.AssembleException;
 import se.matzlarsson.asssim.model.data.instruction.Instruction;
 import se.matzlarsson.asssim.model.data.instruction.InstructionFactory;
 import se.matzlarsson.asssim.model.data.memory.Memory;
@@ -35,10 +36,11 @@ public class Machine {
 		this.counterReg = computer.getAttributes().getNamedItem("counterReg").getNodeValue();
 		this.conditionReg = computer.getAttributes().getNamedItem("conditionReg").getNodeValue();
 		
+		this.memory = MemoryFactory.createMemory(((Element)computer).getElementsByTagName("memory").item(0));
+		this.syntax = SyntaxFactory.createSyntax(((Element)computer).getElementsByTagName("syntax").item(0));
+		
 		initRegisters(((Element)computer).getElementsByTagName("registers").item(0));
 		initInstructions(((Element)computer).getElementsByTagName("instructions").item(0));
-		memory = MemoryFactory.createMemory(((Element)computer).getElementsByTagName("memory").item(0));
-		syntax = SyntaxFactory.createSyntax(((Element)computer).getElementsByTagName("syntax").item(0));
 	}
 	
 	private void initRegisters(Node rootNode){
@@ -53,7 +55,7 @@ public class Machine {
 		NodeList list = ((Element)rootNode).getElementsByTagName("instruction");
 		instructions = new Instruction[list.getLength()];
 		for(int i = 0; i<list.getLength(); i++){
-			instructions[i] = InstructionFactory.createInstruction(list.item(i));
+			instructions[i] = InstructionFactory.createInstruction(this, list.item(i));
 		}
 	}
 	

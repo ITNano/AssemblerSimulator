@@ -56,7 +56,7 @@ public class AssByte {
 	public boolean add(AssByte b){
 		int tmp = 0;
 		int c = 0;
-		for(int i = 7; i>=0; i++){
+		for(int i = 7; i>=0; i--){
 			tmp = bits[i].getValue()+b.bits[i].getValue()+c;
 			c = tmp/2;
 			bits[i].setValue(tmp%2);
@@ -216,6 +216,18 @@ public class AssByte {
 			
 			return overflow==1 || num>0;
 		}
+	}
+	
+	public static boolean add(AssByte[] bytes, AssByte[] addData){
+		int overflow = 0;
+		for(int i = 0; i<bytes.length; i++){
+			if(addData.length>i){
+				overflow = bytes[bytes.length-1-i].add(overflow)?1:0;
+				overflow = bytes[bytes.length-1-i].add(addData[addData.length-1-i])?1:overflow;
+			}
+		}
+		
+		return overflow==1 || addData.length>bytes.length;
 	}
 	
 	public static AssByte[] getAssBytes(NumericalType type, String value){
