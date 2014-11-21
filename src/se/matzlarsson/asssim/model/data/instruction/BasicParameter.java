@@ -11,7 +11,7 @@ public abstract class BasicParameter implements Parameter{
 		this.storeName = storeName;
 	}
 	
-	public void perform(Machine machine, AssByte[] input){
+	public void perform(Machine machine, AssByte... input){
 		machine.setTempValue(storeName, input);
 	}
 	

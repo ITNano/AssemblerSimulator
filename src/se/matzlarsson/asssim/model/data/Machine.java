@@ -20,6 +20,8 @@ public class Machine {
 	private Map<String, AssByte[]> tempValues;
 	
 	private String name;
+	private String counterReg;
+	private String conditionReg;
 	private Register[] registers;
 	private Instruction[] instructions;
 	private Memory memory;
@@ -30,6 +32,9 @@ public class Machine {
 		
 		Node computer = XMLReader.getDocument(xmlPath, false).getElementsByTagName("computer").item(0);
 		this.name = computer.getAttributes().getNamedItem("name").getNodeValue();
+		this.counterReg = computer.getAttributes().getNamedItem("counterReg").getNodeValue();
+		this.conditionReg = computer.getAttributes().getNamedItem("conditionReg").getNodeValue();
+		
 		initRegisters(((Element)computer).getElementsByTagName("registers").item(0));
 		initInstructions(((Element)computer).getElementsByTagName("instructions").item(0));
 		memory = MemoryFactory.createMemory(((Element)computer).getElementsByTagName("memory").item(0));
@@ -56,8 +61,38 @@ public class Machine {
 		return this.name;
 	}
 	
+	public String getCounterRegName(){
+		return this.counterReg;
+	}
+	
+	public String getConditionRegName(){
+		return this.conditionReg;
+	}
+	
 	public Syntax getSyntax(){
 		return this.syntax;
+	}
+	
+	public Instruction findInstruction(String name, String params) throws AssembleException{
+		for(int i = 0; i<instructions.length; i++){
+			if(instructions[i].getName().equals(name)){
+				if(instructions[i].takesParameters(this, params)){
+					return instructions[i];
+				}
+			}
+		}
+		
+		throw new AssembleException("Could not find instruction with appearance", name+" "+params);
+	}
+	
+	public Instruction findInstruction(int ID){
+		for(int i = 0; i<instructions.length; i++){
+			if(instructions[i].getID()==ID){
+				return instructions[i];
+			}
+		}
+		
+		return null;
 	}
 	
 	public int getMemoryAddressSize(){
@@ -72,14 +107,50 @@ public class Machine {
 		return memory.isWriteable(memoryAddress);
 	}
 	
+	public AssByte[] getRegisterValue(String name){
+		Register r = findRegister(name);
+		if(r!=null){
+			return r.getBytes();
+		}else{
+			return null;
+		}
+	}
+	
+	public void setRegisterValue(String name, int value){
+		Register r = findRegister(name);
+		if(r != null){
+			r.setValue(value);
+		}
+	}
+	
+	public void setRegisterValue(String name, String hexValue){
+		Register r = findRegister(name);
+		if(r != null){
+			r.setValue(hexValue);
+		}
+	}
+	
+	public boolean increaseRegister(String name, int value){
+		Register r = findRegister(name);
+		if(r != null){
+			return r.add(value);
+		}else{
+			return false;
+		}
+	}
+	
 	public boolean hasRegister(String name){
+		return findRegister(name)!=null;
+	}
+	
+	private Register findRegister(String name){
 		for(int i = 0; i<registers.length; i++){
 			if(registers[i].getName().equals(name)){
-				return true;
+				return registers[i];
 			}
 		}
 		
-		return false;
+		return null;
 	}
 	
 	public AssByte readMemoryData(int memoryAddress){
@@ -88,6 +159,12 @@ public class Machine {
 	
 	public void writeMemoryData(int memoryAddress, AssByte data){
 		memory.writeMemoryData(memoryAddress, data);
+	}
+	
+	public void writeMemoryData(int memoryAddress, AssByte[] data){
+		for(int i = 0; i<data.length; i++){
+			writeMemoryData(memoryAddress+i, data[i]);
+		}
 	}
 	
 	public void setTempValue(String key, AssByte[] data){
@@ -106,7 +183,14 @@ public class Machine {
 			if(i>0){
 				s.append(", ");
 			}
-			s.append(registers[i].getName()).append(" (").append(registers[i].getByteSize()).append("byte)");
+			s.append(registers[i].getName());
+			s.append(" (").append(registers[i].getByteSize()).append("byte");
+			if(registers[i].getName().equals(this.getCounterRegName())){
+				s.append(", counter");
+			}else if(registers[i].getName().equals(this.getConditionRegName())){
+				s.append(", condition");
+			}
+			s.append(")");
 		}
 		s.append("}\n");
 		

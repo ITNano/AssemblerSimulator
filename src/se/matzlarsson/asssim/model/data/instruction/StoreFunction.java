@@ -1,5 +1,6 @@
 package se.matzlarsson.asssim.model.data.instruction;
 
+import se.matzlarsson.asssim.model.data.AssByte;
 import se.matzlarsson.asssim.model.data.Machine;
 
 public class StoreFunction implements Function {
@@ -16,7 +17,22 @@ public class StoreFunction implements Function {
 
 	@Override
 	public void perform(Machine machine) {
-		String tmp = "";
+		AssByte[] data = machine.getTempValue(input);
+		
+		switch(type){
+			case MEMORY:
+				int address = AssByte.getNumericalValue(machine.getTempValue(output));
+				machine.writeMemoryData(address, data);
+				break;
+			case CONSTANT:
+				machine.setTempValue(output, data);
+				break;
+			case REGISTER:
+				machine.setRegisterValue(output, AssByte.getNumericalValue(data));
+				break;
+			default:
+				break;
+		}
 	}
 
 	@Override

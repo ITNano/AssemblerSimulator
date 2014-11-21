@@ -3,6 +3,9 @@ package se.matzlarsson.asssim.model.data.instruction;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.matzlarsson.asssim.model.data.AssByte;
+import se.matzlarsson.asssim.model.data.Machine;
+import se.matzlarsson.asssim.model.data.SyntaxUtil;
 import se.matzlarsson.asssim.util.Converter;
 
 public class Instruction {
@@ -46,16 +49,85 @@ public class Instruction {
 			parameters.add(param);
 		}
 	}
-
 	
-	public static Instruction find(List<Instruction> instructions, int ID){
-		for(int i = 0; i<instructions.size(); i++){
-			if(instructions.get(i).getID() == ID){
-				return instructions.get(i);
+	public AssByte[] getParameterBytes(Machine m, String input){
+		String[] parts = input.split(",");
+		List<AssByte> bytes = new ArrayList<AssByte>();
+		AssByte[] tmp;
+		for(int i = 0; i<parts.length; i++){
+			String concreteValue = SyntaxUtil.getConcreteValue(m.getSyntax(), parts[i]);
+			tmp = AssByte.getAssBytes(SyntaxUtil.getNumericalType(m.getSyntax(), parts[i]), concreteValue);
+			int emptyBytes = parameters.get(i).getSize()-tmp.length;
+			for(int j = 0; j<emptyBytes; j++){
+				bytes.add(new AssByte());
+			}
+			for(int j = 0; j<tmp.length; j++){
+				bytes.add(tmp[j]);
 			}
 		}
 		
-		return null;
+		AssByte[] b = new AssByte[bytes.size()];
+		for(int i = 0; i<bytes.size(); i++){
+			b[i] = bytes.get(i);
+		}
+		
+		return b;
+	}
+	
+	public String getParameterData(Machine m, int startAddress){
+		String indata = "";
+		int num = 0;
+		for(int i = 0; i<parameters.size(); i++){
+			num = 0;
+			for(int j = 0; j<parameters.get(i).getSize(); j++){
+				num = num*256+m.readMemoryData(startAddress).getValue();
+				startAddress++;
+			}
+			indata += (i>0?",":"")+num;
+		}
+				
+		return indata;
+	}
+	
+	public boolean takesParameters(Machine m, String params){
+		String[] parts = params.split(",");
+		if(parts.length != this.parameters.size()){
+			return false;
+		}
+		
+		for(int i = 0; i<parameters.size(); i++){
+			if(!parameters.get(i).isValid(m, parts[i])){
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public void run(Machine m, String indata){
+		String[] params = indata.split(",");
+		if(params.length != this.parameters.size()){
+			throw new IllegalArgumentException("Invalid parameters");
+		}
+		
+		for(int i = 0; i<parameters.size(); i++){
+			parameters.get(i).perform(m, params[i]);
+		}
+		
+		m.increaseRegister(m.getCounterRegName(), getParameterSize());
+		
+		for(int i = 0; i<functions.size(); i++){
+			functions.get(i).perform(m);
+		}
+	}
+	
+	private int getParameterSize(){
+		int sum = 0;
+		for(int i = 0; i<parameters.size(); i++){
+			sum += parameters.get(i).getSize();
+		}
+		
+		return sum;
 	}
 	
 	@Override

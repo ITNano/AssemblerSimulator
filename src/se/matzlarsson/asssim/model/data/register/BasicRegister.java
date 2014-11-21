@@ -2,6 +2,7 @@ package se.matzlarsson.asssim.model.data.register;
 
 import se.matzlarsson.asssim.model.data.AssByte;
 import se.matzlarsson.asssim.model.data.NumericalType;
+import se.matzlarsson.asssim.util.Converter;
 
 
 public class BasicRegister implements Register{
@@ -41,6 +42,24 @@ public class BasicRegister implements Register{
 	@Override
 	public void setBytes(AssByte... data) {
 		this.data = data;
+	}
+	
+	@Override
+	public void setValue(int value){
+		for(int i = data.length-1; i>=0; i--){
+			data[i].setValue(value%256);
+			value /= 256;
+		}
+	}
+	
+	@Override
+	public void setValue(String hexValue){
+		this.setValue(Converter.hexToDecimal(hexValue));
+	}
+	
+	@Override
+	public boolean add(int num){
+		return AssByte.add(data, num);
 	}
 	
 	@Override

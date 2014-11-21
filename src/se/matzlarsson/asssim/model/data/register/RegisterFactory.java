@@ -47,7 +47,7 @@ public class RegisterFactory {
 			
 			reg = new ReferenceRegister(name, children);
 		}else{
-			NodeList values = ((Element)rootNode).getElementsByTagName("data");
+			NodeList values = ((Element)rootNode).getElementsByTagName("byte");
 			AssByte[] bytes = new AssByte[values.getLength()];
 			NamedNodeMap attr;
 			for(int i = 0; i<bytes.length; i++){
@@ -67,6 +67,7 @@ public class RegisterFactory {
 		AssByte[] bytes = new AssByte[byteStrings.length];
 		for(int i = 0; i<byteStrings.length; i++){
 			bytes[i] = new AssByte(NumericalType.HEXADECIMAL, byteStrings[i]);
+			
 		}
 		
 		return new BasicRegister(source[1], bytes);

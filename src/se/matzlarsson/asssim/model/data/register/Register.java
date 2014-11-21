@@ -9,5 +9,9 @@ public interface Register {
 	public AssByte getByte();
 	public AssByte[] getBytes();
 	public void setBytes(AssByte... data);
+	public void setValue(int value);
+	public void setValue(String value);
+	
+	public boolean add(int num);
 	
 }

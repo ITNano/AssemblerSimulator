@@ -22,6 +22,24 @@ public class SyntaxUtil {
 		}
 	}
 	
+	public static String getConcreteValue(Syntax syntax, String input){
+		String realValue = getRealValue(syntax, input);
+		NumericalType type = getNumericalType(syntax, realValue);
+		int offset = 0;
+		if(type != null){
+			switch(type){
+				case HEXADECIMAL:	offset = syntax.getRule("hexadecimal").getValue().length();
+				break;
+				case BINARY:		offset = syntax.getRule("binary").getValue().length();
+				break;
+				case DECIMAL:		offset = syntax.getRule("decimal").getValue().length();
+				break;
+			}
+		}
+		
+		return realValue.substring(offset);
+	}
+	
 	public static NumericalType getNumericalType(Syntax syntax, String input){
 		input = getRealValue(syntax, input);
 		
@@ -34,7 +52,12 @@ public class SyntaxUtil {
 		}else if(input.startsWith(hex.getValue())){
 			return NumericalType.HEXADECIMAL;
 		}else if(input.startsWith(dec.getValue())){
-			return NumericalType.DECIMAL;
+			try{
+				Integer.parseInt(input);
+				return NumericalType.DECIMAL;
+			}catch(NumberFormatException nfe){
+				return null;
+			}
 		}else{
 			return null;
 		}

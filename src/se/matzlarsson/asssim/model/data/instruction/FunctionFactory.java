@@ -13,7 +13,9 @@ public class FunctionFactory {
 				RequestType loadType = RequestType.find(attr.getNamedItem("type").getNodeValue());
 				String loadInput = attr.getNamedItem("input").getNodeValue();
 				String loadOutput = attr.getNamedItem("output").getNodeValue();
-				return new LoadFunction(loadType, loadInput, loadOutput);
+				Node variable = attr.getNamedItem("variable");
+				boolean inputIsVariable = (variable!=null?variable.getNodeValue().equals("true"):false);
+				return new LoadFunction(loadType, loadInput, loadOutput, inputIsVariable);
 				
 			case "store":
 				RequestType storeType = RequestType.find(attr.getNamedItem("type").getNodeValue());

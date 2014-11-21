@@ -1,16 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<computer name = "HC12">
+<computer name = "HC12" counterReg = "PC" conditionReg = "CCR">
 	<registers>
 		<register name = "A">
-			<data type = "HEX">4C</data>
+			<byte type = "HEX">4C</byte>
 		</register>
 		<register name = "B">
-			<data type = "HEX">F5</data>
+			<byte type = "HEX">F5</byte>
 		</register>
 		<register name = "D">
 			<reference name = "A"></reference>
 			<reference name = "B"></reference>
+		</register>
+		
+		<register name = "X">
+			<byte type = "HEX">00</byte>
+			<byte type = "HEX">00</byte>
+		</register>
+		<register name = "Y">
+			<byte type = "HEX">00</byte>
+			<byte type = "HEX">00</byte>
+		</register>
+		
+		<register name = "PC">
+			<byte type = "HEX">10</byte>
+			<byte type = "HEX">00</byte>
+		</register>
+		<register name = "CCR">
+			<byte type = "HEX">D0</byte>
 		</register>
 	</registers>
 	
@@ -22,17 +39,22 @@
 	
 	<syntax>
 		<inputtype name = "constant">#</inputtype>
-		<inputtype name = "binary" quotes = "'">b</inputtype>
+		<inputtype name = "binary" quotes = "true">b</inputtype>
 		<inputtype name = "hexadecimal">$</inputtype>
 		<inputtype name = "decimal"></inputtype>
 	</syntax>
 	
 	<instructions>
-		<instruction name = "LDA" id = "B6" type = "XXX" help = "Load Accumulator A (from memory)">
-			<parameter type = "MEM" name = "address"></parameter>
+		<instruction name = "LDAA" id = "B6" type = "XXX" help = "Load Accumulator A (from memory)">
+			<parameter type = "CONST" name = "constant"></parameter>
 			<functions>
-				<load type = "MEM" input = "address" output = "value"></load>
-				<store type = "REG" input = "value" output = "A"></store>
+				<store type = "REG" input = "constant" output = "A"></store>
+			</functions>
+		</instruction>
+		<instruction name = "LDAB" id = "01" type = "XXX" help = "Load Accumulator B (from memory)">
+			<parameter type = "MEM" name = "value" address = "address"></parameter>
+			<functions>
+				<store type = "REG" input = "value" output = "B"></store>
 			</functions>
 		</instruction>
 	</instructions>

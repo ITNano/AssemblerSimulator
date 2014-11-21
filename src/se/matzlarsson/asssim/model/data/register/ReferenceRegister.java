@@ -2,6 +2,7 @@ package se.matzlarsson.asssim.model.data.register;
 
 import se.matzlarsson.asssim.model.data.AssByte;
 import se.matzlarsson.asssim.model.data.NumericalType;
+import se.matzlarsson.asssim.util.Converter;
 
 public class ReferenceRegister implements Register{
 	
@@ -75,6 +76,38 @@ public class ReferenceRegister implements Register{
 			}
 			registers[i].setBytes(tmp);
 		}
+	}
+	
+	@Override
+	public void setValue(int value){
+		int range = 0;
+		for(int i = 0; i<registers.length; i++){
+			range = (int)Math.pow(256, registers[i].getByteSize());
+			registers[i].setValue(value%range);
+			value /= range;
+		}
+	}
+	
+	@Override
+	public void setValue(String hexValue){
+		this.setValue(Converter.hexToDecimal(hexValue));
+	}
+	
+	@Override
+	public boolean add(int num){
+		int overflow = 0;
+		int tmpMax = 0;
+		for(int i = registers.length-1; i>=0; i--){
+			tmpMax = (int)Math.pow(256, registers[i].getByteSize());
+			overflow = registers[i].add((num+overflow)%tmpMax)?1:0;
+			num /= tmpMax;
+			
+			if(num<0){
+				overflow = -overflow;
+			}
+		}
+		
+		return overflow!=0;
 	}
 	
 	@Override
